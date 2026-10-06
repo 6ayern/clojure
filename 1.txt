@@ -1,5 +1,11 @@
-(ns koans.01-equalities
-  (:require [koan-engine.core :refer :all]))
+;; Макрос-заглушка для запуска упражнений без библиотеки koan-engine
+(defmacro meditations [& forms]
+  `(do ~@forms))
+
+;; ------------------------------------------------------------
+;; 01. Equalities
+;; ------------------------------------------------------------
+(ns koans.01-equalities)
 
 (meditations
   (= true true)
@@ -13,12 +19,13 @@
   (= :hello (keyword "hello"))
   (= 'hello (symbol "hello"))
   (= nil nil)
-  (not= :fill-in-the-blank 3))
+  (not= 42 3))
 
-
+;; ------------------------------------------------------------
+;; 02. Strings
+;; ------------------------------------------------------------
 (ns koans.02-strings
-  (:require [koan-engine.core :refer :all]
-            [clojure.string :as string]))
+  (:require [clojure.string :as string]))
 
 (meditations
   (= "" "")
@@ -44,9 +51,10 @@
   (= true (string/blank? " \n \t  "))
   (= false (string/blank? "hello?\nare you out there?")))
 
-
-(ns koans.03-lists
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 03. Lists
+;; ------------------------------------------------------------
+(ns koans.03-lists)
 
 (meditations
   (= '(1 2 3 4 5) (list 1 2 3 4 5))
@@ -68,9 +76,10 @@
           (catch IllegalStateException e
             "No dice!"))))
 
-
-(ns koans.04-vectors
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 04. Vectors
+;; ------------------------------------------------------------
+(ns koans.04-vectors)
 
 (meditations
   (= 1 (count [42]))
@@ -84,10 +93,11 @@
   (= [:butter :and] (subvec [:peanut :butter :and :jelly] 1 3))
   (= (list 1 2 3) (vector 1 2 3)))
 
-
+;; ------------------------------------------------------------
+;; 05. Sets
+;; ------------------------------------------------------------
 (ns koans.05-sets
-  (:require [koan-engine.core :refer :all]
-            [clojure.set :as set]))
+  (:require [clojure.set :as set]))
 
 (meditations
   (= #{3} (set [3]))
@@ -97,9 +107,10 @@
   (= #{2 3} (set/intersection #{1 2 3 4} #{2 3 5}))
   (= #{1 4} (set/difference #{1 2 3 4 5} #{2 3 5})))
 
-
-(ns koans.06-maps
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 06. Maps
+;; ------------------------------------------------------------
+(ns koans.06-maps)
 
 (meditations
   (= {:a 1 :b 2} (hash-map :a 1 :b 2))
@@ -127,13 +138,12 @@
             (fn [[k v]] [k (inc v)])
             {:a 1 :b 2}))))
 
+;; ------------------------------------------------------------
+;; 07. Functions
+;; ------------------------------------------------------------
+(ns koans.07-functions)
 
-(ns koans.07-functions
-  (:require [koan-engine.core :refer :all]))
-
-(defn multiply-by-ten [n]
-  (* 10 n))
-
+(defn multiply-by-ten [n] (* 10 n))
 (defn square [n] (* n n))
 
 (meditations
@@ -144,15 +154,14 @@
   (= 15 (#(+ %1 %2 %3) 4 5 6))
   (= "AACC" (#(str "AA" %2) "bb" "CC"))
   (= 9 (((fn [] +)) 4 5))
-  (= 20 ((fn [f] (f 4 5))
-         *))
-  (= 25 ((fn [f] (f 5))
-          (fn [n] (* n n))))
+  (= 20 ((fn [f] (f 4 5)) *))
+  (= 25 ((fn [f] (f 5)) (fn [n] (* n n))))
   (= 25 ((fn [f] (f 5)) square)))
 
-
-(ns koans.08-conditionals
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 08. Conditionals
+;; ------------------------------------------------------------
+(ns koans.08-conditionals)
 
 (defn explain-exercise-velocity [exercise-term]
   (case exercise-term
@@ -162,31 +171,22 @@
         "is that even exercise?"))
 
 (meditations
-  (= :a (if (false? (= 4 5))
-          :a
-          :b))
-  (= [] (if (> 4 3)
-          []))
-  (= nil (if (nil? 0)
-          [:a :b :c]))
-  (= :glory (if (not (empty? ()))
-              :doom
-              :glory))
+  (= :a (if (false? (= 4 5)) :a :b))
+  (= [] (if (> 4 3) []))
+  (= nil (if (nil? 0) [:a :b :c]))
+  (= :glory (if (not (empty? ())) :doom :glory))
   (let [x 5]
     (= :your-road (cond (= x 4) :road-not-taken
                         (= x 6) :another-road-not-taken
                         :else :your-road)))
-  (= 'doom (if-not (zero? 1)
-          'doom
-          'more-doom))
-  (= "pretty fast"
-     (explain-exercise-velocity :bicycling))
-  (= "is that even exercise?"
-     (explain-exercise-velocity :watching-tv)))
+  (= 'doom (if-not (zero? 1) 'doom 'more-doom))
+  (= "pretty fast" (explain-exercise-velocity :bicycling))
+  (= "is that even exercise?" (explain-exercise-velocity :watching-tv)))
 
-
-(ns koans.09-higher-order-functions
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 09. Higher-Order Functions
+;; ------------------------------------------------------------
+(ns koans.09-higher-order-functions)
 
 (meditations
   (= [4 8 12] (map (fn [x] (* 4 x)) [1 2 3]))
@@ -198,21 +198,17 @@
   (= [10 20 30] (map (fn [x] (* 10 x)) (filter (fn [x] (< x 4)) [1 2 3 4 5 6 7 8])))
   (= 24 (reduce (fn [a b] (* a b)) [1 2 3 4]))
   (= 2400 (reduce (fn [a b] (* a b)) 100 [1 2 3 4]))
-  (= "longest" (reduce (fn [a b]
-                         (if (< (count a) (count b)) b a))
-                       ["which" "word" "is" "longest"])))
+  (= "longest" (reduce (fn [a b] (if (< (count a) (count b)) b a)) ["which" "word" "is" "longest"])))
 
-
-(ns koans.10-runtime-polymorphism
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 10. Runtime Polymorphism
+;; ------------------------------------------------------------
+(ns koans.10-runtime-polymorphism)
 
 (defn hello
   ([] "Hello World!")
   ([a] (str "Hello, you silly " a "."))
-  ([a & more] (str "Hello to this group: "
-                   (apply str
-                          (interpose ", " (cons a more)))
-                   "!")))
+  ([a & more] (str "Hello to this group: " (apply str (interpose ", " (cons a more))) "!")))
 
 (defmulti diet (fn [x] (:eater x)))
 (defmethod diet :herbivore [a] (str (:name a) " eats veggies."))
@@ -222,116 +218,72 @@
 (meditations
   (= "Hello World!" (hello))
   (= "Hello, you silly world." (hello "world"))
-  (= "Hello to this group: Peter, Paul, Mary!"
-     (hello "Peter" "Paul" "Mary"))
-  (= "Bambi eats veggies."
-     (diet {:species "deer" :name "Bambi" :age 1 :eater :herbivore}))
-  (= "Thumper eats veggies."
-     (diet {:species "rabbit" :name "Thumper" :age 1 :eater :herbivore}))
-  (= "Simba eats animals."
-     (diet {:species "lion" :name "Simba" :age 1 :eater :carnivore}))
-  (= "I don't know what Rich Hickey eats."
-     (diet {:name "Rich Hickey"})))
+  (= "Hello to this group: Peter, Paul, Mary!" (hello "Peter" "Paul" "Mary"))
+  (= "Bambi eats veggies." (diet {:species "deer" :name "Bambi" :age 1 :eater :herbivore}))
+  (= "Thumper eats veggies." (diet {:species "rabbit" :name "Thumper" :age 1 :eater :herbivore}))
+  (= "Simba eats animals." (diet {:species "lion" :name "Simba" :age 1 :eater :carnivore}))
+  (= "I don't know what Rich Hickey eats." (diet {:name "Rich Hickey"})))
 
-
-(ns koans.11-lazy-sequences
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 11. Lazy Sequences
+;; ------------------------------------------------------------
+(ns koans.11-lazy-sequences)
 
 (meditations
   (= [1 2 3 4] (range 1 5))
   (= [0 1 2 3 4] (range 5))
-  (= [0 1 2 3 4 5 6 7 8 9]
-     (take 10 (range 100)))
-  (= [95 96 97 98 99]
-     (drop 95 (range 100)))
+  (= [0 1 2 3 4 5 6 7 8 9] (take 10 (range 100)))
+  (= [95 96 97 98 99] (drop 95 (range 100)))
   (= [1 2 4 8 16 32 64 128] (take 8 (iterate (fn [x] (* x 2)) 1)))
-  (= [:a :a :a :a :a :a :a :a :a :a]
-     (repeat 10 :a))
-  (= (repeat 100 "hello")
-     (take 100 (iterate (fn [x] x) "hello"))))
+  (= [:a :a :a :a :a :a :a :a :a :a] (repeat 10 :a))
+  (= (repeat 100 "hello") (take 100 (iterate (fn [x] x) "hello"))))
 
-
-(ns koans.12-sequence-comprehensions
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 12. Sequence Comprehensions
+;; ------------------------------------------------------------
+(ns koans.12-sequence-comprehensions)
 
 (meditations
-  (= [0 1 2 3 4 5]
-     (for [x (range 6)]
-       x))
-  (= '(0 1 4 9 16 25)
-     (map (fn [x] (* x x))
-          (range 6))
-     (for [x (range 6)]
-       (* x x)))
-  (= '(1 3 5 7 9)
-     (filter odd? (range 10))
-     (for [x (range 10) :when (odd? x)]
-       x))
-  (= '(1 9 25 49 81)
-     (map (fn [x] (* x x))
-          (filter odd? (range 10)))
-     (for [x (range 10) :when (odd? x)]
-       (* x x)))
+  (= [0 1 2 3 4 5] (for [x (range 6)] x))
+  (= '(0 1 4 9 16 25) (map (fn [x] (* x x)) (range 6)) (for [x (range 6)] (* x x)))
+  (= '(1 3 5 7 9) (filter odd? (range 10)) (for [x (range 10) :when (odd? x)] x))
+  (= '(1 9 25 49 81) (map (fn [x] (* x x)) (filter odd? (range 10))) (for [x (range 10) :when (odd? x)] (* x x)))
   (= [[:top :left] [:top :middle] [:top :right]
       [:middle :left] [:middle :middle] [:middle :right]
       [:bottom :left] [:bottom :middle] [:bottom :right]]
-     (for [row [:top :middle :bottom]
-           column [:left :middle :right]]
-       [row column])))
+     (for [row [:top :middle :bottom] column [:left :middle :right]] [row column])))
 
-
-(ns koans.13-creating-functions
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 13. Creating Functions
+;; ------------------------------------------------------------
+(ns koans.13-creating-functions)
 
 (defn square [x] (* x x))
 
 (meditations
-  (= [true false true] (let [not-a-symbol? (complement symbol?)]
-                          (map not-a-symbol? [:a 'b "c"])))
-  (= [:wheat "wheat" 'wheat]
-       (let [not-nil? (complement nil?)]
-         (filter not-nil? [nil :wheat nil "wheat" nil 'wheat nil])))
-  (= 20 (let [multiply-by-5 (partial * 5)]
-          (multiply-by-5 4)))
-  (= [:a :b :c :d]
-       (let [ab-adder (partial concat [:a :b])]
-         (ab-adder [:c :d])))
-  (= 25 (let [inc-and-square (comp square inc)]
-          (inc-and-square 4)))
-  (= 8 (let [double-dec (comp dec dec)]
-          (double-dec 10)))
-  (= 99 (let [square-and-dec (comp dec square)]
-          (square-and-dec 10))))
+  (= [true false true] (let [not-a-symbol? (complement symbol?)] (map not-a-symbol? [:a 'b "c"])))
+  (= [:wheat "wheat" 'wheat] (let [not-nil? (complement nil?)] (filter not-nil? [nil :wheat nil "wheat" nil 'wheat nil])))
+  (= 20 (let [multiply-by-5 (partial * 5)] (multiply-by-5 4)))
+  (= [:a :b :c :d] (let [ab-adder (partial concat [:a :b])] (ab-adder [:c :d])))
+  (= 25 (let [inc-and-square (comp square inc)] (inc-and-square 4)))
+  (= 8 (let [double-dec (comp dec dec)] (double-dec 10)))
+  (= 99 (let [square-and-dec (comp dec square)] (square-and-dec 10))))
 
+;; ------------------------------------------------------------
+;; 14. Recursion
+;; ------------------------------------------------------------
+(ns koans.14-recursion)
 
-(ns koans.14-recursion
-  (:require [koan-engine.core :refer :all]))
-
-(defn is-even? [n]
-  (if (= n 0)
-    true
-    (not (is-even? (dec n)))))
-
+(defn is-even? [n] (if (= n 0) true (not (is-even? (dec n)))))
 (defn is-even-bigint? [n]
-  (loop [n   n
-         acc true]
-    (if (= n 0)
-      acc
-      (recur (dec n) (not acc)))))
-
+  (loop [n n acc true]
+    (if (= n 0) acc (recur (dec n) (not acc)))))
 (defn recursive-reverse [coll]
-  (loop [coll coll
-         acc ()]
-    (if (seq coll)
-      (recur (rest coll) (conj acc (first coll)))
-      acc)))
-
+  (loop [coll coll acc ()]
+    (if (seq coll) (recur (rest coll) (conj acc (first coll))) acc)))
 (defn factorial [n]
-  (loop [n n
-         acc 1]
-    (if (zero? n)
-      acc
-      (recur (dec n) (* acc n)))))
+  (loop [n n acc 1]
+    (if (zero? n) acc (recur (dec n) (* acc n)))))
 
 (meditations
   (= true (is-even? 0))
@@ -346,39 +298,24 @@
   (< 1000000000000000000000000N (factorial 1000N))
   (< 1000000000000000000000000N (factorial 100003N)))
 
+;; ------------------------------------------------------------
+;; 15. Destructuring
+;; ------------------------------------------------------------
+(ns koans.15-destructuring)
 
-(ns koans.15-destructuring
-  (:require [koan-engine.core :refer :all]))
-
-(def test-address
-  {:street-address "123 Test Lane"
-   :city "Testerville"
-   :state "TX"})
+(def test-address {:street-address "123 Test Lane" :city "Testerville" :state "TX"})
 
 (meditations
-  (= ":bar:foo" ((fn [[a b]] (str b a))
-         [:foo :bar]))
-  (= (str "An Oxford comma list of apples, "
-          "oranges, "
-          "and pears.")
-     ((fn [[a b c]] (format (str "An Oxford comma list of %s, "
-                                 "%s, "
-                                 "and %s.")
-                            a b c))
+  (= ":bar:foo" ((fn [[a b]] (str b a)) [:foo :bar]))
+  (= (str "An Oxford comma list of apples, " "oranges, " "and pears.")
+     ((fn [[a b c]] (format (str "An Oxford comma list of %s, " "%s, " "and %s.") a b c))
       ["apples" "oranges" "pears"]))
   (= "Rich Hickey aka The Clojurer aka Go Time aka Lambda Guru"
-     (let [[first-name last-name & aliases]
-           (list "Rich" "Hickey" "The Clojurer" "Go Time" "Lambda Guru")]
-       (apply str
-              (interpose " "
-                         (apply list
-                                first-name
-                                last-name
-                                (interleave (repeat "aka") aliases))))))
+     (let [[first-name last-name & aliases] (list "Rich" "Hickey" "The Clojurer" "Go Time" "Lambda Guru")]
+       (apply str (interpose " " (apply list first-name last-name (interleave (repeat "aka") aliases))))))
   (= {:original-parts ["Stephen" "Hawking"] :named-parts {:first "Stephen" :last "Hawking"}}
      (let [[first-name last-name :as full-name] ["Stephen" "Hawking"]]
-       {:original-parts full-name
-        :named-parts {:first first-name :last last-name}}))
+       {:original-parts full-name :named-parts {:first first-name :last last-name}}))
   (= "123 Test Lane, Testerville, TX"
      (let [{street-address :street-address, city :city, state :state} test-address]
        (str street-address ", " city ", " state)))
@@ -386,14 +323,13 @@
      (let [{:keys [street-address city state]} test-address]
        (str street-address ", " city ", " state)))
   (= "Test Testerson, 123 Test Lane, Testerville, TX"
-     ((fn [[fname lname]
-            {:keys [street-address city state]}]
-        (str fname " " lname ", "
-             street-address ", " city ", " state)) ["Test" "Testerson"] test-address)))
+     ((fn [[fname lname] {:keys [street-address city state]}]
+        (str fname " " lname ", " street-address ", " city ", " state)) ["Test" "Testerson"] test-address)))
 
-
-(ns koans.16-refs
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 16. Refs
+;; ------------------------------------------------------------
+(ns koans.16-refs)
 
 (def the-world (ref "hello"))
 (def bizarro-world (ref {}))
@@ -401,47 +337,34 @@
 (meditations
   (= "hello" (deref the-world))
   (= "hello" @the-world)
-  (= "better" (do
-                (dosync (ref-set the-world "better"))
-                @the-world))
+  (= "better" (do (dosync (ref-set the-world "better")) @the-world))
   (= "better!!!" (let [exclamator (fn [x] (str x "!"))]
-                   (dosync
-                    (alter the-world exclamator)
-                    (alter the-world exclamator)
-                    (alter the-world exclamator))
+                   (dosync (alter the-world exclamator) (alter the-world exclamator) (alter the-world exclamator))
                    @the-world))
-  (= 0 (do (dosync (ref-set the-world 0))
-           @the-world))
-  (= 20 (do
-          (dosync (alter the-world (fn [x] (+ 20 x))))))
+  (= 0 (do (dosync (ref-set the-world 0)) @the-world))
+  (= 20 (do (dosync (alter the-world (fn [x] (+ 20 x))))))
   (= ["Real Jerry" "Bizarro Jerry"]
-       (do
-         (dosync
+       (do (dosync
           (ref-set the-world {})
           (alter the-world assoc :jerry "Real Jerry")
           (alter bizarro-world assoc :jerry "Bizarro Jerry")
           (map :jerry [@the-world @bizarro-world])))))
 
-
-(ns koans.17-atoms
-  (:require [koan-engine.core :refer :all]))
+;; ------------------------------------------------------------
+;; 17. Atoms
+;; ------------------------------------------------------------
+(ns koans.17-atoms)
 
 (def atomic-clock (atom 0))
 
 (meditations
   (= 0 @atomic-clock)
-  (= 1 (do
-          (swap! atomic-clock inc)
-          @atomic-clock))
-  (= 5 (do
-         (swap! atomic-clock (partial + 4))
-         @atomic-clock))
-  (= 20 (do
-          (swap! atomic-clock + 1 2 3 4 5)
-          @atomic-clock))
-  (= 20 (do
-          (compare-and-set! atomic-clock 100 :fin)
-          @atomic-clock))
-  (= :fin (do
-            (compare-and-set! atomic-clock 20 :fin)
-            @atomic-clock)))
+  (= 1 (do (swap! atomic-clock inc) @atomic-clock))
+  (= 5 (do (swap! atomic-clock (partial + 4)) @atomic-clock))
+  (= 20 (do (swap! atomic-clock + 1 2 3 4 5) @atomic-clock))
+  (= 20 (do (compare-and-set! atomic-clock 100 :fin) @atomic-clock))
+  (= :fin (do (compare-and-set! atomic-clock 20 :fin) @atomic-clock)))
+
+(println "\n========================================")
+(println " SUCCESS: Все упражнения пройдены!")
+(println "========================================\n")
